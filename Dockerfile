@@ -18,6 +18,7 @@ RUN tar -xzf xtensa-esp32-elf-linux64-1.22.0-80-g6c4433a-5.2.0.tar.gz && rm -f x
 # Set environment variables
 ENV PATH=$PATH:/esp/xtensa-esp32-elf/bin
 ENV IDF_PATH=/esp/esp-idf
+
 # Clone ESP-IDF
 RUN git clone --recursive https://github.com/espressif/esp-idf.git --branch release/v3.2
 
@@ -30,22 +31,18 @@ RUN python -m pip install --user pygdbmi==0.9.0.2 gdbgui
 RUN usermod -aG dialout root
 
 # Install Ruby
-# basics
-RUN apt-get install -qy procps curl ca-certificates gnupg2 build-essential --no-install-recommends && apt-get clean
+RUN git clone https://github.com/rbenv/rbenv.git /root/.rbenv
+ENV PATH=$PATH:/root/.rbenv/bin
+RUN echo 'eval "$(rbenv init -)"' >> /root/.bashrc
+RUN mkdir -p "$(rbenv root)"/plugins
+RUN git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build
+RUN apt-get install -y libssl-dev libreadline-dev zlib1g-dev
+RUN rbenv install 2.6.3
+RUN rbenv global 2.6.3
+RUN eval "$(rbenv init -)" && rbenv install mruby-1.4.1
 
-# install RVM and Ruby
-RUN gpg2 --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3
-RUN curl -sSL https://get.rvm.io | bash -s
-RUN /bin/bash -l -c ". /etc/profile.d/rvm.sh && rvm install 2.6.3"
-RUN /bin/bash -l -c ". /etc/profile.d/rvm.sh && rvm install mruby-1.4.1"
-RUN source /etc/profile.d/rvm.sh
-RUN PATH="$PATH"
-RUN exec bash
-RUN apt-get install -y mruby
-RUN export PATH="/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin"
 # Move to working directory
 VOLUME /proj
 WORKDIR /proj
 
 ENTRYPOINT ["make"]
-
