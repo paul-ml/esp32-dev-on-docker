@@ -37,8 +37,8 @@ RUN echo 'eval "$(rbenv init -)"' >> /root/.bashrc
 RUN mkdir -p "$(rbenv root)"/plugins
 RUN git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build
 RUN apt-get install -y libssl-dev libreadline-dev zlib1g-dev
-RUN rbenv install 2.7.0
-RUN rbenv global 2.7.0
+RUN rbenv install 2.6.3
+RUN rbenv global 2.6.3
 RUN eval "$(rbenv init -)" && rbenv install mruby-1.4.1
 
 # Move to working directory
