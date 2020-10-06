@@ -40,6 +40,7 @@ RUN apt-get install -y libssl-dev libreadline-dev zlib1g-dev
 RUN rbenv install 2.6.3
 RUN rbenv global 2.6.3
 RUN eval "$(rbenv init -)" && rbenv install mruby-1.4.1
+RUN rbenv global mruby-1.4.1
 
 # Move to working directory
 VOLUME /proj
